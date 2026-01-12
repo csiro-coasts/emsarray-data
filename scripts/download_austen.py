@@ -57,5 +57,4 @@ if out.exists():
 for data_array in (dataset[name] for name in dataset.variables.keys()):
     data_array.encoding.update({'zlib': True, 'complevel': 9, 'shuffle': True})
 dataset.ems.to_netcdf(out)
-print(dataset)
 print(f"{out.name}: {out.stat().st_size / (1024 ** 2):3.2f}MB")
