@@ -9,8 +9,9 @@ available through the ``emsarray.tutorial.open_datasets()`` function.
 ==========
 
 A day of the AUSTEn National Tidal model data.
-This dataset is defined on a `Unstructured Grid <https://ugrid-conventions.github.io/ugrid-conventions/>`_,
+This dataset is defined on an `unstructured grid <https://ugrid-conventions.github.io/ugrid-conventions/>`_,
 handled by the ``UGrid`` convention.
+Most variables are defined on grid faces.
 The dataset is downloaded and subset via the ``scripts/download_austen.py`` script.
 
 Link
@@ -63,3 +64,19 @@ Link
     https://research.csiro.au/ereefs/ereefs-data/
 Licence
     `CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`_
+
+``vanuatu``
+===========
+
+One day of the SCHISM-WWMIII hydrological and wave model hindcast for Vanuatu.
+This dataset is defined on an `unstructured grid <https://ugrid-conventions.github.io/ugrid-conventions/>`_,
+handled by the ``UGrid`` convention.
+Most variables are defined on grid nodes.
+The dataset is downloaded and subset via the ``scripts/download_vanutatu.py`` script.
+
+Link
+    https://data.csiro.au/collection/65060
+Licence
+    `CC BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`_
+Citation
+    Hernaman, Vanessa; Hally, Bryan; Hoeke, Ron; Ortiz-Angulo Cantos, Jared; Perez Diaz, Beatriz; & Trenham, Claire (2024): SCHISM-WWMIII hydrological and wave model hindcast for Vanuatu. v4. CSIRO. Data Collection. https://doi.org/10.25919/gqdd-jc07
