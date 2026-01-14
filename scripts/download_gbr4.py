@@ -17,7 +17,7 @@ if out_temp.exists():
 run('ncks', '-d', 'time,0,0', url, out_temp)
 
 copy_variables(out_temp, out, ['zc', 'longitude', 'latitude', 'time'])
-pack_variables(out_temp, out, ['botz', 'eta', 'salt', 'temp'])
+pack_variables(out_temp, out, ['botz', 'eta', 'salt', 'temp', 'u', 'v'])
 
 out_temp.unlink()
 
