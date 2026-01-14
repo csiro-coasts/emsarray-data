@@ -1,0 +1,24 @@
+[build-system]
+requires = [
+	"setuptools >= 35.0.2",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emsarray-data"
+version = "0.0.0"
+description = "Scripts for making tutorial datasets for emsarray out of real world datasets"
+authors = [
+	{name = "Coastal Environmental Modelling team, Oceans and Atmosphere, CSIRO", email = "coasts@csiro.au"},
+]
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+	"emsarray",
+]
+
+[tool.setuptools.packages.find]
+where = [""]
+include = ["emsarray_data", "emsarray_data.*"]
+namespaces = false

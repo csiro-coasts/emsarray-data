@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+
+dependencies:
+  - python ~= 3.14
+  - pip
+  - xarray ~= 2025.12
+  - nco ~= 5.3

@@ -2,41 +2,36 @@
 
 import pathlib
 
-import emsarray  # noqa
-import numpy as np
-import xarray as xr
+from emsarray_data.pack import copy_variables, pack_variables
+from emsarray_data.utils import report, run
 
 url = "https://thredds.nci.org.au/thredds/dodsC/gb6/BRAN/BRAN2020/daily/ocean_temp_2021_12.nc"
 out = pathlib.Path("./bran2020.nc")
 
-dataset = xr.open_dataset(url)
-
-# Drop some variables
-dataset = dataset.drop_vars([
-    'Time_bounds', 'st_edges_ocean',
-    'average_T1', 'average_T2', 'average_DT',
-])
-
-# Fix attribute names for ease of access
-dataset['Time'].attrs['standard_name'] = 'time'
-del dataset['Time'].attrs['bounds']
-dataset['yt_ocean'].attrs['standard_name'] = 'latitude'
-dataset['xt_ocean'].attrs['standard_name'] = 'longitude'
-
-# Slice to a smaller spatial and temporal extent
-dataset = dataset.isel(
-    xt_ocean=np.s_[1400:1500],
-    yt_ocean=np.s_[280:380],
-    st_ocean=np.s_[0:30],
-    Time=np.s_[0:20],
-)
+out_temp = out.with_name(out.stem + ".temp" + out.suffix)
 
 if out.exists():
     out.unlink()
+if out_temp.exists():
+    out_temp.unlink()
 
-# Set up maximum compression for each variable
-for data_array in (dataset[name] for name in dataset.variables.keys()):
-    data_array.encoding.update({'zlib': True, 'complevel': 9, 'shuffle': True})
-dataset.ems.to_netcdf(out)
+run(
+    'ncks',
+    '-d', 'Time,0,19',
+    '-d', 'xt_ocean,1400,1499',
+    '-d', 'yt_ocean,280,379',
+    '-d', 'st_ocean,0,29',
+    url, out_temp)
+copy_variables(out_temp, out, ['Time', 'xt_ocean', 'yt_ocean', 'st_ocean', 'temp'])
+run(
+    'ncatted',
+    '-a', 'standard_name,Time,c,c,time',
+    '-a', 'bounds,Time,d,,',
+    '-a', 'standard_name,xt_ocean,c,c,latitude',
+    '-a', 'standard_name,yt_ocean,c,c,longitude',
+    out,
+)
 
-print(f"{out.name}: {out.stat().st_size / (1024 ** 2):3.2f}MB")
+out_temp.unlink()
+
+report(out)

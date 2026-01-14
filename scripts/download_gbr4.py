@@ -2,40 +2,23 @@
 
 import pathlib
 
-import numpy as np
+from emsarray_data.pack import pack_variables, copy_variables
+from emsarray_data.utils import run, report
 
-import emsarray
-from emsarray.utils import extract_vars
-
-url = "https://thredds.nci.org.au/thredds/dodsC/fx3/gbr4_v2/gbr4_simple_2022-05-12.nc"
+url = "https://thredds.nci.org.au/thredds/dodsC/fx3/gbr4_H4p0_ABARRAr2_OBRAN2020_FG2Gv3_Dhnd/gbr4_simple_2022-10-16.nc"
 out = pathlib.Path("./gbr4.nc")
-
-dataset = emsarray.open_dataset(url)
-
-# Pick only a few variables
-dataset = extract_vars(dataset, [
-    'zc', 'longitude', 'latitude', 'time',
-    'botz', 'eta', 'salt', 'temp',
-])
-
-# One timestep
-dataset = dataset.isel(time=np.s_[0:1])
-
-# Cast all float64 variables to float32. We don't need the precision in an
-# example, and float32's are half the file size.
-dataset.update({
-    name: data_array.astype(np.single, casting='same_kind')
-    for name, data_array in ((name, dataset[name]) for name in dataset.variables.keys())
-    if data_array.dtype == np.float64
-})
-
+out_temp = out.with_name(out.stem + ".temp" + out.suffix)
 
 if out.exists():
     out.unlink()
+if out_temp.exists():
+    out_temp.unlink()
 
-# Set up maximum compression for each variable
-for data_array in (dataset[name] for name in dataset.variables.keys()):
-    data_array.encoding.update({'zlib': True, 'complevel': 9, 'shuffle': True})
-dataset.ems.to_netcdf(out)
+run('ncks', '-d', 'time,0,0', url, out_temp)
 
-print(f"{out.name}: {out.stat().st_size / (1024 ** 2):3.2f}MB")
+copy_variables(out_temp, out, ['zc', 'longitude', 'latitude', 'time'])
+pack_variables(out_temp, out, ['botz', 'eta', 'salt', 'temp'])
+
+out_temp.unlink()
+
+report(out)
