@@ -25,7 +25,7 @@ run(
 copy_variables(out_temp, out, ['zc', 'time'])
 cast_variable(out_temp, out, 'latitude', 'NC_FLOAT')
 cast_variable(out_temp, out, 'longitude', 'NC_FLOAT')
-pack_variables(out_temp, out, ['botz', 'eta', 'temp', 'u', 'v'])
+pack_variables(out_temp, out, ['botz', 'eta', 'temp', 'salt', 'u', 'v'])
 
 out_temp.unlink()
 
